@@ -153,23 +153,31 @@ Reserved for post-greybox: gacha hero pulls, persistent hero collection (R/B/Y +
 
 ```
 ┌─────────────────────────────────┐
-│ 🔴 (red exit — HP damage)       │
-│  ╔═══════════════════════╗      │
-│  ║ TOP BLOCK (3 slots)   ║      │
-│  ╚═══════════════════════╝      │
-│                                 │
-│      ╔═══════════════════╗      │
-│      ║ T-HORIZONTAL (5)  ║      │
-│      ╚═════╦═════════════╝      │
-│            ║                    │
-│            ║ T-VERTICAL  🟢     │
-│            ║ (3 slots)   spawn  │
-│            ║                    │
-│  ╔═══════╗ ╔═══════╗            │
-│  ║ BLOCK ║ ║ BLOCK ║            │
-│  ║ A (4) ║ ║ B (4) ║            │
-│  ╚═══════╝ ╚═══════╝            │
-│                                 │
+│ 🔴◄───────────────────────┐     │  segment 7: top, leftward → exit
+│  ╔═══════════════════════╗│     │
+│  ║ TOP BLOCK (3 slots)   ║│     │
+│  ╚═══════════════════════╝│     │
+│   ▲                       │     │
+│   │ segment 6: upward     │     │
+│      ╔═══════════════════╗│     │
+│      ║ T-HORIZONTAL (5)  ║│     │
+│      ╚═════╦═════════════╝▲     │
+│   ▲ ◄──────────────────┐  │seg 5│
+│   │ seg 5: leftward   ▲│        │
+│   │ under T-horiz     ││        │
+│            ║          ││  🟢◄── │  segment 1: spawn → leftward
+│   seg 4 ▲  ║seg 2     ││ spawn  │
+│   left  │  ║down right││        │
+│   side  │  ║side      ││        │
+│         │  ║          ▼│        │
+│         │  ╚╗  ┌───┐  ╔╝        │
+│  ╔══════╗│ ║ │  └───┘ │ ║╔══════╗│
+│  ║BLOCK ║│ ║ │ seg 3  │ ║║BLOCK ║│
+│  ║ A(4) ║▲ ║ │ across │ ║║ B(4) ║│
+│  ╚══════╝│ ║ │ bottom │ ║╚══════╝│
+│          │ ║ └───────►│ ║        │
+│          └─────────────────────  │
+│                                  │
 │ ╔═════════════════════════════╗ │
 │ ║ 🟡 SLINGSHOT + CARD UI      ║ │
 │ ╚═════════════════════════════╝ │
@@ -178,7 +186,19 @@ Reserved for post-greybox: gacha hero pulls, persistent hero collection (R/B/Y +
 
 **Total hero slots: 19** — Block A: 4, Block B: 4, T-horizontal: 5, T-vertical: 3, Top block: 3.
 
-**Enemy path:** Spawn at green dot (right side, mid-screen) → snake around platforms following the white space → exit at red dot (top-left). Path is a single fixed snake, not branching. Continuous march; no round breaks within a stage.
+**Enemy path (verified 2026-05-20, see image reference in repo):** Serpentine, single fixed path, continuous march, no round breaks. Seven segments:
+
+| Seg | Direction | Path |
+|---|---|---|
+| 1 | ← left | Spawn at 🟢 (right, mid). Enter the gap between T-horizontal and the bottom-blocks row. |
+| 2 | ↓ down | Right side of T-vertical stem; descend toward the bottom-blocks gap. |
+| 3 | ← left | Across the bottom (between the row of bottom blocks and the yellow rampart). Passes under both Block B and the T-vertical foot, ending below Block A. |
+| 4 | ↑ up | Left side of T-vertical stem (between Block A and the stem); rise back up toward T-horizontal. |
+| 5 | ← left, then ↑ up | Cross under T-horizontal leftward, then turn up at the left edge of the arena. |
+| 6 | ↑ up | Rise past the left side of T-horizontal, then over the top of T-horizontal, then along the right side of the top block. |
+| 7 | ← left | Final stretch across the top, into 🔴 (top-left exit). |
+
+**Strategic implication of the path:** the enemy passes the right side of T-vertical (seg 2) AND the left side (seg 4), so heroes on T-vertical get two fire opportunities per enemy. Heroes on T-horizontal cover seg 5 (below them) AND seg 6 (above them). Top block covers seg 7. Block A covers segs 3–4. Block B covers segs 1–3. Slot value is not uniform — coverage of multiple segments is the highest-value placement.
 
 **Yellow zone (player area):** Slingshot anchored at center-bottom. Card pick UI hovers above the rampart — three hero cards visible at all times; tap to select; then tap a platform slot to place.
 
@@ -225,6 +245,20 @@ Reserved for post-greybox: gacha hero pulls, persistent hero collection (R/B/Y +
 - **Damage:** AoE explosion on impact. Radius ~2 enemy widths. Damage = constant base + scales with slingshot upgrades (see §4).
 - **What it does NOT do:** does not damage your heroes or platforms; does not bounce off the screen edges (treat edges as walls that absorb).
 - **Why ricochet matters:** elevated platforms block direct shots to enemies in corridors behind them. To clear a wave, the player must aim ricochet shots.
+
+**Reachability from the yellow slingshot anchor** (informs aim difficulty per segment — tune in greybox):
+
+| Path segment | Direct line-of-sight from slingshot? | Recommended approach |
+|---|---|---|
+| Seg 1 (spawn → left under T-horiz) | Partial — blocked by Block B | Single bounce off right edge of Block B |
+| Seg 2 (down right side of T-vert) | Partial — blocked by Block B | Lob over Block B; impact in the corridor |
+| Seg 3 (bottom row, across) | **Direct** | Flat trajectory along the floor — easiest shots |
+| Seg 4 (up left side of T-vert) | Partial — blocked by Block A | Lob over Block A or bounce off T-vert side |
+| Seg 5 (under T-horiz, leftward) | Blocked by T-horiz from below | 1–2 bounces (e.g., off Block A then T-vert side) |
+| Seg 6 (left of T-horiz, upward) | Blocked by T-horiz | 2 bounces; high-skill |
+| Seg 7 (top, leftward to exit) | Blocked by T-horiz + Top block | **2–3 bounces — hardest shots, highest stakes** (closest to exit = most HP at risk) |
+
+This stratifies skill expression naturally: easy lobs into seg 3 for new players; high-bounce arcs into seg 7 for experts. The slingshot is most valuable for clearing seg 7 enemies before they reach 🔴.
 
 ### 3.7 Coin economy
 

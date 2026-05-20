@@ -136,25 +136,29 @@ Minimum viable. No nav, no shop, no profile.
 ┌─────────────────────────────────────────────────┐
 │ [HP ████████████ 100/100]   COINS: 23   STAGE 1 │  ◄── HUD strip
 ├─────────────────────────────────────────────────┤
-│ 🔴 ← exit (HP damage on entry)                  │
-│                                                 │
-│ ╔══════════════════════════╗                    │
-│ ║ TOP BLOCK   [B] [.] [Y]  ║   ← 3 slots        │
-│ ╚══════════════════════════╝                    │
-│                                                 │
+│ 🔴◄──────────────────────────┐ seg 7            │
+│ ╔══════════════════════════╗ │                  │
+│ ║ TOP BLOCK   [B] [.] [Y]  ║ │                  │
+│ ╚══════════════════════════╝ │                  │
+│  ▲ seg 6                     │                  │
+│  │                           │                  │
 │    ╔═══════════════════════════╗                │
-│    ║ T-HORIZ [R][.][B][.][.]   ║   ← 5 slots    │
+│    ║ T-HORIZ [R][.][B][.][.]   ║                │
 │    ╚════╦══════════════════════╝                │
-│         ║                       🟢 ← enemy      │
-│         ║ T-V         spawn                     │
-│         ║ [Y]                                   │
-│         ║ [.]                                   │
-│         ║ [.]   ← 3 slots                       │
-│                                                 │
+│ ▲       ║         ◄──────────┐  seg 5           │
+│ │seg 5  ║                    │                  │
+│         ║                    │ 🟢◄── seg 1      │
+│  seg 4  ║T-V    seg 2        │   spawn          │
+│  ▲      ║[Y]    ║▼                              │
+│  │      ║[.]    ║                               │
+│  │      ║[.]    ║                               │
+│  │      ║                                       │
 │ ╔══════════╗   ╔══════════╗                     │
 │ ║ A [R][R] ║   ║ B [.][.] ║                     │
-│ ║   [B][.] ║   ║   [Y][.] ║   ← 4 slots each    │
+│ ║   [B][.] ║   ║   [Y][.] ║                     │
 │ ╚══════════╝   ╚══════════╝                     │
+│  ▲                                              │
+│  │  ◄─────────────────────────   seg 3          │
 │                                                 │
 │   ··········· slingshot trajectory preview ··· │
 │ ╔═════════════════════════════════════════════╗ │
@@ -166,6 +170,24 @@ Minimum viable. No nav, no shop, no profile.
 │ ╚═════════════════════════════════════════════╝ │
 └─────────────────────────────────────────────────┘
 ```
+
+**Enemy path (7 segments — see `v2-design-spec.md` §3.1):**
+1. Spawn 🟢 (right mid) → leftward into the gap below T-horizontal
+2. ↓ down the right side of T-vertical
+3. ← left across the bottom (between bottom blocks and yellow rampart)
+4. ↑ up the left side of T-vertical
+5. ← left under T-horizontal, then turn up at left edge
+6. ↑ up past T-horizontal left side, then over top, then along right side of top block
+7. ← left across the top to exit 🔴
+
+**Slot value heatmap (for tester observation):**
+- **T-vertical (3 slots):** highest — covers seg 2 + seg 4 (path passes twice)
+- **T-horizontal (5 slots):** high — covers seg 5 + seg 6
+- **Block A (4 slots):** medium — covers seg 3 + seg 4
+- **Block B (4 slots):** medium — covers seg 1 + seg 2 + seg 3
+- **Top block (3 slots):** low–medium — covers seg 7 only (last stretch before exit)
+
+HUD must render the enemy path visibly during play (faint dashed line or worn-stone texture) so testers can read which slots cover which segments without explanation.
 
 **HUD elements:**
 - **HP bar** — shared HP, top strip, color-coded (green/yellow/red zones)
