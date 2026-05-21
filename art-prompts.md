@@ -4,12 +4,12 @@ status: mood-board exploration
 created: 2026-05-21
 purpose: AI art generation prompts for v2 character mood-board. 9 heroes (3 colors × 3 tiers) + 1 boss. Use to drive concept art exploration before committing to a final visual direction.
 design_spec: ~/game-research/ricochet-brigade/v2-design-spec.md
-output_folder: ./demos/
+output_folder: ./demons/
 ---
 
 # Ricochet Brigade — Character Art Prompts
 
-> Use these prompts in LILA Art MCP, Midjourney, SDXL, or Imagen to mood-board the v2 character roster. Generated images go in `./demos/`. After mood-board review, lock the visual direction in a separate `character-roster.md`.
+> Use these prompts in LILA Art MCP, Midjourney, SDXL, or Imagen to mood-board the v2 character roster. Generated images go in `./demons/`. After mood-board review, lock the visual direction in a separate `character-roster.md`.
 
 ## Silhouette principle (load-bearing)
 
@@ -166,7 +166,7 @@ Pick A or B based on which arena theme you want to commit to.
 3. **Variations per prompt:** generate 4–6 per character; pick best to develop further
 4. **Iteration:** if a character doesn't pass the silhouette test, add specific shape cues to the prompt ("massive shoulder pauldrons", "horned helm forming a clear V")
 5. **Mood-board review:** lay out all 9 heroes (3×3 grid) at uniform scale; check family-readability + tier-progression-readability + class-readability across the board
-6. **Save outputs:** put generated images in `./demos/` alongside this file; name them `red-bronze-v1.png`, `red-bronze-v2.png` etc.
+6. **Save outputs:** put generated images in `./demons/` alongside this file; name them `red-bronze-v1.png`, `red-bronze-v2.png` etc.
 
 ---
 
